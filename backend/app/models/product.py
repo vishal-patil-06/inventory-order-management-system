@@ -35,7 +35,6 @@ class Product(Base):
 
     code = Column(
         String(100),
-        unique=True,
         nullable=False
     )
 

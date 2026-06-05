@@ -9,12 +9,18 @@ from app.routers.auth import (
     router as auth_router
 )
 
+from app.routers.products import (
+    router as product_router
+)
+
+
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="Inventory Management API"
 )
 
+# Health check endpoints
 @app.get("/")
 def root():
     return {
@@ -33,5 +39,6 @@ def db_health():
     }
 
 
-
+# adding routers
 app.include_router(auth_router)
+app.include_router(product_router)
