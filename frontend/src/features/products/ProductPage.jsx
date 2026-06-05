@@ -1,4 +1,7 @@
-import { useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
 
 import PageHeader from "../../components/common/PageHeader";
 
@@ -6,11 +9,16 @@ import ProductTable from "./ProductTable";
 import ProductModal from "./ProductModal";
 import ProductForm from "./ProductForm";
 
-import productMockData from "./productMockData";
+import {
+  getProductsApi,
+  createProductApi,
+  updateProductApi,
+  deleteProductApi,
+} from "../../api/productApi";
 
 export default function ProductPage() {
-  const [products, setProducts] =
-    useState(productMockData);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const [showModal, setShowModal] =
     useState(false);
@@ -50,45 +58,103 @@ export default function ProductPage() {
   const openEditModal = (product) => {
     setSelectedProduct(product);
 
-    setFormData(product);
+    setFormData({
+      name: product.name,
+      code: product.code,
+      price: product.price,
+      stockQuantity:
+        product.stock_quantity,
+    });
 
     setShowModal(true);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (selectedProduct) {
-      setProducts((prev) =>
-        prev.map((product) =>
-          product.id === selectedProduct.id
-            ? {
-                ...product,
-                ...formData,
-              }
-            : product
-        )
+    const payload = {
+      name: formData.name,
+      code: formData.code,
+      price: Number(
+        formData.price
+      ),
+      stock_quantity: Number(
+        formData.stockQuantity
+      ),
+      low_stock_threshold: 5,
+    };
+
+    try {
+      if (selectedProduct) {
+        await updateProductApi(
+          selectedProduct.id,
+          payload
+        );
+      } else {
+        await createProductApi(
+          payload
+        );
+      }
+
+      await fetchProducts();
+
+      setShowModal(false);
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        error?.response?.data
+          ?.detail ||
+          "Something went wrong"
       );
-    } else {
-      setProducts((prev) => [
-        {
-          id: Date.now(),
-          ...formData,
-        },
-        ...prev,
-      ]);
     }
-
-    setShowModal(false);
   };
 
-  const handleDelete = (id) => {
-    setProducts((prev) =>
-      prev.filter(
-        (product) => product.id !== id
-      )
+  const handleDelete = async (id) => {
+    const confirmed =
+      window.confirm(
+        "Delete product?"
+      );
+
+    if (!confirmed) return;
+
+    try {
+      await deleteProductApi(id);
+
+      await fetchProducts();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+
+      const response =
+        await getProductsApi();
+
+      setProducts(
+        response.data.data
+      );
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="p-8">
+        Loading products...
+      </div>
     );
-  };
+  }
 
   return (
     <>
