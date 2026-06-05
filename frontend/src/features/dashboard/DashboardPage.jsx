@@ -1,14 +1,64 @@
+import { useEffect, useState } from "react";
+
 import DashboardCard from "./DashboardCard";
 import LowStockTable from "./LowStockTable";
 import RecentOrdersTable from "./RecentOrdersTable";
 
-import {
-  dashboardStats,
-  lowStockProducts,
-  recentOrders,
-} from "./dashboardMockData";
+import { getDashboardSummary } from "../../api/dashboardApi";
 
 export default function DashboardPage() {
+  const [dashboardStats, setDashboardStats] =
+    useState(null);
+
+  const [loading, setLoading] =
+    useState(true);
+
+  useEffect(() => {
+    loadDashboard();
+  }, []);
+
+  const loadDashboard = async () => {
+    try {
+      const response =
+        await getDashboardSummary();
+
+      const data =
+        response.data;
+
+      setDashboardStats({
+        totalProducts:
+          data.total_products,
+
+        totalCustomers:
+          data.total_customers,
+
+        totalOrders:
+          data.total_orders,
+
+        lowStockProducts:
+          data.low_stock_products,
+
+        inventoryValue:
+          data.total_inventory_value,
+      });
+    } catch (error) {
+      console.error(
+        "Dashboard error:",
+        error
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="p-8">
+        Loading dashboard...
+      </div>
+    );
+  }
+
   return (
     <div>
       {/* Header */}
@@ -55,7 +105,7 @@ export default function DashboardPage() {
           grid
           grid-cols-1
           md:grid-cols-2
-          xl:grid-cols-4
+          xl:grid-cols-5
           gap-5
           mb-8
         "
@@ -91,6 +141,14 @@ export default function DashboardPage() {
           }
           description="Require attention"
         />
+
+        <DashboardCard
+          title="Inventory Value"
+          value={`₹${Number(
+            dashboardStats.inventoryValue
+          ).toLocaleString()}`}
+          description="Current stock value"
+        />
       </div>
 
       {/* Tables */}
@@ -104,11 +162,11 @@ export default function DashboardPage() {
         "
       >
         <LowStockTable
-          products={lowStockProducts}
+          products={[]}
         />
 
         <RecentOrdersTable
-          orders={recentOrders}
+          orders={[]}
         />
       </div>
     </div>

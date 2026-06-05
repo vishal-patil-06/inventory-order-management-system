@@ -1,6 +1,15 @@
 export default function LowStockTable({
   products,
 }) {
+
+  if (!products.length) {
+    return (
+      <div className="bg-white rounded-xl p-6">
+        No low stock products found.
+      </div>
+    );
+  }
+  
   return (
     <div
       className="

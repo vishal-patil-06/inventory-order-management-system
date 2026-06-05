@@ -6,10 +6,10 @@ import {
 } from "lucide-react";
 
 import {
-  clearOwner,
-} from "../../features/auth/utils/authStorage";
-
-import { NavLink } from "react-router-dom";
+  NavLink,
+  useNavigate,
+} from "react-router-dom";
+import { clearOwner } from "../../features/auth/utils/authStorage";
 
 const navItems = [
   {
@@ -34,17 +34,33 @@ const navItems = [
   },
 ];
 
-
-
 export default function Sidebar() {
-  const handleLogout =
-    () => {
-      clearOwner();
-  
-      navigate(
-        "/login"
+    const navigate =
+    useNavigate();
+
+  const owner = JSON.parse(
+    localStorage.getItem("owner")
+  );
+
+  const ownerName =
+    owner?.full_name || "Admin";
+
+  const ownerEmail =
+    owner?.email || "";
+
+  const handleLogout = () => {
+    const confirmed =
+      window.confirm(
+        "Are you sure you want to logout?"
       );
-    };
+
+    if (!confirmed) return;
+
+    clearOwner();
+
+    navigate("/login");
+  };
+  
   return (
     <aside
       className="
@@ -109,11 +125,35 @@ export default function Sidebar() {
           border-t
           border-slate-800
           p-5
-          text-sm
-          text-slate-500
         "
       >
-        Ethara Assessment
+        <div className="mb-4">
+          <p className="font-medium text-white">
+            {ownerName}
+          </p>
+
+          <p className="text-xs text-slate-500 mt-1">
+            {ownerEmail}
+          </p>
+        </div>
+
+        <button
+          onClick={handleLogout}
+          className="
+            w-full
+            rounded-lg
+            border
+            border-red-500/30
+            px-4
+            py-2
+            text-sm
+            text-red-400
+            hover:bg-red-500/10
+            transition
+          "
+        >
+          Logout
+        </button>
       </div>
     </aside>
   );

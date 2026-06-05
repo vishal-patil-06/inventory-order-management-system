@@ -1,6 +1,15 @@
 export default function RecentOrdersTable({
   orders,
 }) {
+
+  if (!orders.length) {
+    return (
+      <div className="bg-white rounded-xl p-6">
+        No recent orders found.
+      </div>
+    );
+  }
+
   return (
     <div
       className="
