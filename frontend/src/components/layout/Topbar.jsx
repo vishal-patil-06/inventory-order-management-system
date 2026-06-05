@@ -1,4 +1,8 @@
 export default function Topbar() {
+
+  const owner = JSON.parse(localStorage.getItem("owner"));
+  const ownerName = owner?.full_name || "Admin";
+
   return (
     <header
       className="
@@ -32,7 +36,7 @@ export default function Topbar() {
           text-sm
         "
       >
-        Admin
+        <b>{`Business owner: `}</b>{ownerName}
       </div>
     </header>
   );

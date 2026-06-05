@@ -6,11 +6,24 @@ import DashboardPage from "../features/dashboard/DashboardPage";
 import ProductPage from "../features/products/ProductPage";
 import CustomerPage from "../features/customers/CustomerPage";
 import OrderPage from "../features/orders/OrderPage";
+import LoginPage from "../features/auth/pages/LoginPage";
+import ProtectedRoute from "./ProtectedRoutes";
+import RegisterPage from "../features/auth/pages/RegisterPage";
 
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route element={<MainLayout />}>
+      <Route
+        path="/login"
+        element={<LoginPage />}
+      />
+
+      <Route
+        path="/register"
+        element={<RegisterPage />}
+      />
+
+      <Route element={<ProtectedRoute />}>
         <Route
           path="/"
           element={<DashboardPage />}

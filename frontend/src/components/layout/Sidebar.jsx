@@ -5,6 +5,10 @@ import {
   ShoppingCart,
 } from "lucide-react";
 
+import {
+  clearOwner,
+} from "../../features/auth/utils/authStorage";
+
 import { NavLink } from "react-router-dom";
 
 const navItems = [
@@ -30,7 +34,17 @@ const navItems = [
   },
 ];
 
+
+
 export default function Sidebar() {
+  const handleLogout =
+    () => {
+      clearOwner();
+  
+      navigate(
+        "/login"
+      );
+    };
   return (
     <aside
       className="
