@@ -17,7 +17,9 @@ from app.routers.customers import (
     router as customer_router
 )
 
-
+from app.routers.orders import (
+    router as order_router
+)
 
 Base.metadata.create_all(bind=engine)
 
@@ -48,3 +50,4 @@ def db_health():
 app.include_router(auth_router)
 app.include_router(product_router)
 app.include_router(customer_router)
+app.include_router(order_router)

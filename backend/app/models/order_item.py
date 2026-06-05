@@ -6,9 +6,14 @@ from sqlalchemy import DateTime
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import Numeric
+from sqlalchemy.orm import relationship
 
 from app.models.base import Base
 
+order = relationship(
+    "Order",
+    back_populates="items"
+)
 
 class OrderItem(Base):
     __tablename__ = "order_items"

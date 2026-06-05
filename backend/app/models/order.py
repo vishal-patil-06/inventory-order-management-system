@@ -8,8 +8,14 @@ from sqlalchemy import ForeignKey
 from sqlalchemy import Numeric
 from sqlalchemy import String
 from sqlalchemy import Text
+from sqlalchemy.orm import relationship
 
 from app.models.base import Base
+
+items = relationship(
+    "OrderItem",
+    back_populates="order"
+)
 
 
 class Order(Base):
