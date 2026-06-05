@@ -21,6 +21,11 @@ from app.routers.orders import (
     router as order_router
 )
 
+from app.routers.dashboard import (
+    router as dashboard_router
+)
+
+
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -51,3 +56,4 @@ app.include_router(auth_router)
 app.include_router(product_router)
 app.include_router(customer_router)
 app.include_router(order_router)
+app.include_router(dashboard_router)
