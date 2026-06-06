@@ -44,7 +44,7 @@ export default function CustomerTable({
               "
             >
               <td className="p-4">
-                {customer.fullName}
+                {customer.full_name}
               </td>
 
               <td className="p-4">
